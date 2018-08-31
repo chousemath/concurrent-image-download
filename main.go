@@ -26,20 +26,20 @@ func main() {
 	}
 	for _, url := range os.Args[2:] {
 		wg.Add(1)
-		go worker(&url, &dirName)
+		go worker(url, &dirName)
 	}
 
 	wg.Wait()
 }
 
 // worker represents each go routine
-func worker(url *string, dirName *string) {
+func worker(url string, dirName *string) {
 	fmt.Println("STARTING DOWNLOAD")
 	defer func() {
 		fmt.Println("Single image download complete!")
 		wg.Done()
 	}()
-	response, err := http.Get(*url)
+	response, err := http.Get(url)
 	if err != nil {
 		fmt.Println("There was an error downloading a file...")
 		return
