@@ -1,12 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
+	"path"
 	"sync"
 	"time"
 )
@@ -18,25 +19,33 @@ func main() {
 	fmt.Println("v0.0.1")
 	rand.Seed(time.Now().UnixNano())
 	dirName := os.Args[1]
-	newPath := filepath.Join(".", "images", dirName)
+	newPath := path.Join(".", "images", dirName)
 	err := os.MkdirAll(newPath, os.ModePerm)
 	if err != nil {
 		fmt.Println("There was an error creating the directory...")
 		return
 	}
-	for _, url := range os.Args[2:] {
+
+	file, err := os.Open("./images.txt")
+	if err != nil {
+		fmt.Println("Could not open images.txt file...")
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
 		wg.Add(1)
-		go worker(url, &dirName)
+		go worker(scanner.Text(), dirName)
 	}
 
 	wg.Wait()
 }
 
 // worker represents each go routine
-func worker(url string, dirName *string) {
+func worker(url string, dirName string) {
 	fmt.Println("STARTING DOWNLOAD")
 	defer func() {
-		fmt.Println("Single image download complete!")
 		wg.Done()
 	}()
 	response, err := http.Get(url)
@@ -50,7 +59,7 @@ func worker(url string, dirName *string) {
 	for i := range buf {
 		buf[i] = chars[rand.Intn(len(chars))]
 	}
-	file, err := os.Create(fmt.Sprintf("./images/%s/%s.jpg", *dirName, string(buf)))
+	file, err := os.Create(fmt.Sprintf("./images/%s/%s.jpg", dirName, string(buf)))
 	if err != nil {
 		fmt.Println("There was an error opening a file...")
 		return
