@@ -1,6 +1,12 @@
 
 ### Test script
 
+#### Building for windows
+
+```bash
+$ GOOS=windows GOARCH=386 go build -o images.exe main.go
+```
+
 > Using main.go and `go run`
 
 ```bash
