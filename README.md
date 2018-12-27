@@ -1,21 +1,20 @@
-
-### Test script
-
 #### Building for windows
 
 ```bash
 $ GOOS=windows GOARCH=386 go build -o images.exe main.go
 ```
 
-> Using main.go and `go run`
+#### Windows-Related Build Errors
 
 ```bash
-$ go run main.go 2012-hyundai-sonata-x6 https://media.alienwarearena.com/media/tux-r.jpg http://is2.4chan.org/v/1535495940072.jpg https://cdn.clien.net/web/api/file/F01/5056610/98a56e7d0a61485f8b5.JPG https://www.yyyyyyy.info/files/images/p31.jpg https://static.businessinsider.com/image/52b36ba6eab8ea58492deb16-750.jpg
+$ GOOS=windows GOARCH=386 go build -o images.exe main.go
+
+# You may see this error
+../../Sirupsen/logrus/terminal_windows.go:10:2: cannot find package "github.com/konsorten/go-windows-terminal-sequences" in any of:
+	/usr/local/Cellar/go/1.11/libexec/src/github.com/konsorten/go-windows-terminal-sequences (from $GOROOT)
+	/Users/jo/go/src/github.com/konsorten/go-windows-terminal-sequences (from $GOPATH)
+You have new mail in /var/mail/jo
+
+# To resolve the error above, run...
+$ GOOS=windows go get ./...
 ```
-
-> After using `go build` to generate the executable
-
-```bash
-$ ./concurrent-image-download 2012-hyundai-sonata-x6 https://media.alienwarearena.com/media/tux-r.jpg http://is2.4chan.org/v/1535495940072.jpg https://cdn.clien.net/web/api/file/F01/5056610/98a56e7d0a61485f8b5.JPG https://www.yyyyyyy.info/files/images/p31.jpg https://static.businessinsider.com/image/52b36ba6eab8ea58492deb16-750.jpg
-```
-
